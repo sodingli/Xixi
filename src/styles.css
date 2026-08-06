@@ -1,0 +1,2906 @@
+:root {
+  color-scheme: light;
+  --ink: #24252a;
+  --muted: #656974;
+  --panel: rgba(255, 252, 247, 0.92);
+  --line: rgba(36, 37, 42, 0.14);
+  --rose: #ff7d94;
+  --coral: #ff9d6b;
+  --mint: #72d6bf;
+  --teal: #2aa8a0;
+  --sun: #ffd36a;
+  --focus: #6f7dfb;
+  --shadow: 0 18px 48px rgba(47, 37, 31, 0.2);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+.app {
+  --eye-x: 0px;
+  --eye-y: 0px;
+  display: grid;
+  grid-template-rows: 32px 226px 1fr;
+  width: 100vw;
+  height: 100vh;
+  color: var(--ink);
+  user-select: none;
+}
+
+.window-bar {
+  -webkit-app-region: no-drag;
+  position: fixed;
+  top: 76px;
+  right: -18px;
+  z-index: 20;
+  display: grid;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 8px 0 0 8px;
+  background: rgba(255, 252, 247, 0.66);
+  box-shadow: 0 10px 26px rgba(47, 37, 31, 0.14);
+  backdrop-filter: blur(14px);
+  opacity: 0.62;
+  transition:
+    right 160ms ease,
+    opacity 160ms ease,
+    background 160ms ease;
+}
+
+.window-bar:hover,
+.window-bar:focus-within {
+  right: 6px;
+  opacity: 1;
+  background: rgba(255, 252, 247, 0.92);
+}
+
+.icon-button,
+.text-button,
+.send-button,
+.tab {
+  -webkit-app-region: no-drag;
+  display: inline-grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.window-bar .icon-button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.text-button {
+  min-width: 58px;
+  padding: 0 12px;
+  color: #ffffff;
+  background: var(--teal);
+  box-shadow: none;
+}
+
+.send-button {
+  width: 34px;
+  height: 34px;
+  color: #ffffff;
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.icon-button:hover,
+.text-button:hover,
+.send-button:hover,
+.tab:hover {
+  transform: translateY(-1px);
+}
+
+.icon-button.is-active,
+.tab.is-active {
+  color: #ffffff;
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.pet-zone {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 8px;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.bubble {
+  width: min(292px, calc(100vw - 36px));
+  min-height: 42px;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.pet {
+  position: relative;
+  width: 160px;
+  height: 164px;
+  margin-top: 2px;
+  border-radius: 8px;
+  background: transparent;
+  filter: drop-shadow(0 16px 22px rgba(48, 37, 30, 0.23));
+  cursor: grab;
+  pointer-events: auto;
+  animation: float 3.6s ease-in-out infinite;
+}
+
+.app.is-dragging .pet,
+.app.is-dragging .bubble {
+  cursor: grabbing;
+}
+
+.pet:active {
+  transform: translateY(4px) scale(0.98);
+}
+
+.hair-bun {
+  position: absolute;
+  top: 0;
+  left: 68px;
+  z-index: 4;
+  width: 29px;
+  height: 30px;
+  border-radius: 53% 47% 48% 52%;
+  background: radial-gradient(circle at 40% 28%, #3a2f2c, #161517 72%);
+  box-shadow: inset 4px -4px 0 rgba(255, 255, 255, 0.08);
+}
+
+.hair-tie {
+  position: absolute;
+  right: -3px;
+  bottom: 4px;
+  width: 16px;
+  height: 9px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f7e889, #8dded1);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.55);
+  transform: rotate(-18deg);
+}
+
+.hair-back {
+  position: absolute;
+  top: 18px;
+  left: 31px;
+  z-index: 1;
+  width: 100px;
+  height: 88px;
+  border-radius: 50% 50% 44% 44%;
+  background:
+    radial-gradient(circle at 34% 20%, rgba(255, 255, 255, 0.12), transparent 22%),
+    linear-gradient(155deg, #2f2928 0%, #161517 82%);
+  box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.18);
+}
+
+.hair-side {
+  position: absolute;
+  top: 51px;
+  z-index: 3;
+  width: 25px;
+  height: 54px;
+  border-radius: 48% 48% 54% 54%;
+  background: linear-gradient(180deg, #242020, #131315);
+}
+
+.hair-left {
+  left: 28px;
+  transform: rotate(9deg);
+}
+
+.hair-right {
+  right: 28px;
+  transform: rotate(-9deg);
+}
+
+.head {
+  position: absolute;
+  top: 30px;
+  left: 43px;
+  z-index: 4;
+  width: 76px;
+  height: 72px;
+  border-radius: 48% 48% 45% 45%;
+  background: linear-gradient(160deg, #ffe1c9 0%, #fff0df 55%, #ffd7bf 100%);
+  box-shadow:
+    inset 0 -7px 0 rgba(224, 116, 88, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.66);
+}
+
+.fringe {
+  position: absolute;
+  top: -7px;
+  z-index: 5;
+  width: 24px;
+  height: 30px;
+  border-radius: 68% 32% 70% 30%;
+  background: linear-gradient(180deg, #292222, #141416);
+  transform-origin: top center;
+}
+
+.fringe-one {
+  left: 10px;
+  transform: rotate(18deg);
+}
+
+.fringe-two {
+  left: 27px;
+  width: 21px;
+  height: 34px;
+  transform: rotate(3deg);
+}
+
+.fringe-three {
+  right: 9px;
+  transform: rotate(-16deg) scaleX(-1);
+}
+
+.face-glow {
+  position: absolute;
+  top: 21px;
+  left: 50%;
+  width: 42px;
+  height: 15px;
+  border-radius: 50%;
+  background: rgba(255, 236, 204, 0.5);
+  transform: translateX(-50%);
+}
+
+.eye {
+  position: absolute;
+  top: 31px;
+  z-index: 6;
+  width: 11px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1f2025;
+  overflow: hidden;
+}
+
+.eye span {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  transform: translate(var(--eye-x), var(--eye-y));
+}
+
+.eye-left {
+  left: 20px;
+}
+
+.eye-right {
+  right: 20px;
+}
+
+.cheek {
+  position: absolute;
+  top: 48px;
+  z-index: 6;
+  width: 14px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 126, 142, 0.42);
+}
+
+.cheek-left {
+  left: 12px;
+}
+
+.cheek-right {
+  right: 12px;
+}
+
+.mouth {
+  position: absolute;
+  top: 53px;
+  left: 50%;
+  z-index: 6;
+  width: 16px;
+  height: 8px;
+  border-bottom: 3px solid #7b3a3b;
+  border-radius: 0 0 16px 16px;
+  transform: translateX(-50%);
+}
+
+.neck {
+  position: absolute;
+  top: 96px;
+  left: 70px;
+  z-index: 2;
+  width: 22px;
+  height: 18px;
+  border-radius: 0 0 12px 12px;
+  background: #ffd9c0;
+}
+
+.body {
+  position: absolute;
+  top: 105px;
+  left: 39px;
+  z-index: 3;
+  width: 84px;
+  height: 48px;
+  border-radius: 22px 22px 18px 18px;
+  background: linear-gradient(150deg, #ec2644 0%, #c91533 100%);
+  box-shadow:
+    inset 0 -7px 0 rgba(111, 18, 33, 0.18),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+}
+
+.collar {
+  position: absolute;
+  top: -2px;
+  z-index: 5;
+  width: 27px;
+  height: 21px;
+  border-radius: 8px 8px 14px 14px;
+  background: #fff8ef;
+  box-shadow: inset 0 -3px 0 rgba(221, 151, 130, 0.16);
+}
+
+.collar-left {
+  left: 22px;
+  transform: rotate(16deg);
+}
+
+.collar-right {
+  right: 22px;
+  transform: rotate(-16deg);
+}
+
+.dress {
+  position: absolute;
+  top: 17px;
+  left: 20px;
+  z-index: 3;
+  width: 44px;
+  height: 35px;
+  border-radius: 8px 8px 16px 16px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.42) 0 2px, transparent 2px 10px) 0 0 / 12px 12px,
+    linear-gradient(180deg, #fff5ea, #ffe2d5);
+}
+
+.coat-panel {
+  position: absolute;
+  top: 17px;
+  z-index: 4;
+  width: 25px;
+  height: 33px;
+  border-radius: 9px 9px 13px 13px;
+  background: linear-gradient(160deg, #ff4b64, #d7193a);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+
+.coat-left {
+  left: 8px;
+  transform: rotate(5deg);
+}
+
+.coat-right {
+  right: 8px;
+  transform: rotate(-5deg);
+}
+
+.core-light {
+  position: absolute;
+  top: 23px;
+  left: 50%;
+  z-index: 6;
+  width: 14px;
+  height: 13px;
+  background: var(--sun);
+  border-radius: 10px 10px 12px 12px;
+  box-shadow: 0 0 16px rgba(255, 211, 106, 0.85);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.core-light::before,
+.core-light::after {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: inherit;
+  content: "";
+}
+
+.core-light::before {
+  left: -7px;
+  top: 0;
+}
+
+.core-light::after {
+  left: 0;
+  top: -7px;
+}
+
+.bunny-pocket {
+  position: absolute;
+  right: 13px;
+  bottom: 7px;
+  z-index: 6;
+  width: 20px;
+  height: 15px;
+  border-radius: 8px 8px 10px 10px;
+  background: #5d88aa;
+  box-shadow: inset 0 -3px 0 rgba(21, 57, 84, 0.18);
+}
+
+.bunny-pocket::before,
+.bunny-pocket::after {
+  position: absolute;
+  top: -9px;
+  width: 7px;
+  height: 13px;
+  border-radius: 7px 7px 3px 3px;
+  background: #5d88aa;
+  content: "";
+}
+
+.bunny-pocket::before {
+  left: 3px;
+  transform: rotate(-12deg);
+}
+
+.bunny-pocket::after {
+  right: 3px;
+  transform: rotate(12deg);
+}
+
+.bunny-pocket span {
+  position: absolute;
+  left: 7px;
+  top: 5px;
+  width: 6px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ff9aae;
+}
+
+.arm {
+  position: absolute;
+  top: 15px;
+  z-index: 1;
+  width: 21px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #f5bfd2, #ed8faf);
+  transform-origin: top center;
+}
+
+.arm-left {
+  left: -9px;
+  transform: rotate(18deg);
+}
+
+.arm-right {
+  right: -9px;
+  transform: rotate(-18deg);
+}
+
+.hand {
+  position: absolute;
+  bottom: -5px;
+  left: 3px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffd9c0;
+}
+
+.leg {
+  position: absolute;
+  top: 146px;
+  z-index: 1;
+  width: 17px;
+  height: 22px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, #f0da98, #d9c079);
+}
+
+.leg-left {
+  left: 61px;
+  transform: rotate(4deg);
+}
+
+.leg-right {
+  right: 61px;
+  transform: rotate(-4deg);
+}
+
+.shoe {
+  position: absolute;
+  top: 162px;
+  z-index: 2;
+  width: 26px;
+  height: 14px;
+  border-radius: 14px 14px 8px 8px;
+  background: linear-gradient(180deg, #ffd1dd, #f49eb8);
+  box-shadow: inset 0 -3px 0 rgba(188, 73, 111, 0.18);
+}
+
+.shoe-left {
+  left: 51px;
+  transform: rotate(-3deg);
+}
+
+.shoe-right {
+  right: 51px;
+  transform: rotate(3deg);
+}
+
+.status-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.status-row span {
+  max-width: 130px;
+  height: 24px;
+  padding: 3px 8px;
+  overflow: hidden;
+  border-radius: 8px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: inset 0 0 0 1px var(--line);
+  font-size: 12px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panel {
+  align-self: stretch;
+  width: calc(100vw - 14px);
+  min-height: 0;
+  margin: 0 auto 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.tab {
+  width: 100%;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.view {
+  display: none;
+  height: calc(100% - 40px);
+  min-height: 0;
+}
+
+.view.is-active {
+  display: grid;
+}
+
+#chatView {
+  grid-template-rows: 1fr auto;
+  gap: 8px;
+}
+
+.messages,
+.reminder-list {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.message,
+.reminder-item,
+.emotion-card,
+.setting-row,
+.toggle-row {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.message {
+  width: fit-content;
+  max-width: 86%;
+  margin: 0 0 7px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.38;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+.message.user {
+  margin-left: auto;
+  color: #ffffff;
+  background: var(--teal);
+  box-shadow: none;
+}
+
+.message.assistant {
+  color: var(--ink);
+}
+
+.composer,
+.reminder-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+}
+
+.composer textarea,
+.reminder-form input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: 0;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.composer textarea {
+  min-height: 34px;
+  max-height: 54px;
+  padding: 6px 9px;
+  resize: none;
+}
+
+.composer textarea:focus,
+.reminder-form input:focus {
+  border-color: rgba(42, 168, 160, 0.72);
+  box-shadow: 0 0 0 3px rgba(114, 214, 191, 0.25);
+}
+
+#remindersView {
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+}
+
+.reminder-form {
+  grid-template-columns: 1fr 138px auto;
+}
+
+.reminder-form input {
+  height: 40px;
+  padding: 0 9px;
+  font-size: 12px;
+}
+
+.reminder-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 7px;
+  padding: 8px;
+}
+
+.reminder-item strong,
+.reminder-item span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.reminder-item strong {
+  font-size: 13px;
+}
+
+.reminder-item span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#cameraView {
+  grid-template-rows: auto 118px auto;
+  gap: 8px;
+}
+
+.camera-actions {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.camera-actions span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.camera-preview {
+  width: 100%;
+  height: 118px;
+  border-radius: 8px;
+  object-fit: cover;
+  background:
+    linear-gradient(135deg, rgba(114, 214, 191, 0.24), rgba(255, 211, 106, 0.18)),
+    rgba(255, 255, 255, 0.62);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.emotion-card {
+  min-height: 74px;
+  padding: 9px 10px;
+}
+
+.emotion-card span {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.emotion-card p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+#settingsView {
+  align-content: start;
+  gap: 8px;
+}
+
+.setting-row,
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 42px;
+  padding: 9px 10px;
+  font-size: 13px;
+}
+
+.setting-row strong {
+  max-width: 190px;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toggle-row {
+  cursor: pointer;
+}
+
+.toggle-row input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal);
+}
+
+.persona-form {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.persona-form label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.persona-form textarea {
+  width: 100%;
+  min-height: 58px;
+  max-height: 92px;
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  outline: 0;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.84);
+  font-size: 12px;
+  line-height: 1.35;
+  resize: vertical;
+}
+
+.persona-form textarea:focus {
+  border-color: rgba(42, 168, 160, 0.72);
+  box-shadow: 0 0 0 3px rgba(114, 214, 191, 0.25);
+}
+
+.persona-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.persona-actions .text-button {
+  min-width: 52px;
+  height: 28px;
+  font-size: 12px;
+}
+
+.persona-actions .icon-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+}
+
+.app[data-mood="happy"] .mouth {
+  top: 51px;
+  height: 12px;
+  border-bottom-width: 4px;
+}
+
+.app[data-mood="happy"] .core-light {
+  background: #fff085;
+  box-shadow: 0 0 24px rgba(255, 240, 133, 0.95);
+}
+
+.app[data-mood="thinking"] .pet {
+  animation-duration: 2.4s;
+}
+
+.app[data-mood="tired"] .eye {
+  top: 38px;
+  height: 5px;
+  border-radius: 10px;
+}
+
+.app[data-mood="sad"] .mouth {
+  top: 58px;
+  height: 8px;
+  border-top: 3px solid #7b3a3b;
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+}
+
+.app[data-mood="surprised"] .mouth {
+  top: 52px;
+  width: 10px;
+  height: 12px;
+  border: 3px solid #7b3a3b;
+  border-radius: 50%;
+}
+
+.app[data-mood="stressed"] .head {
+  box-shadow:
+    inset 0 -8px 0 rgba(255, 125, 148, 0.18),
+    0 0 0 3px rgba(255, 125, 148, 0.2);
+}
+
+.app[data-mood="focused"] .core-light {
+  background: var(--focus);
+  box-shadow: 0 0 22px rgba(111, 125, 251, 0.72);
+}
+
+.app.is-compact {
+  grid-template-rows: 32px 212px 1fr;
+}
+
+.app.is-compact .panel {
+  display: none;
+}
+
+.app.is-compact .window-bar {
+  top: 54px;
+}
+
+.pet.is-booped {
+  animation: boop 420ms ease;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes boop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08) rotate(-2deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Q-version girl redesign. Keep the same DOM so interactions and moods stay wired. */
+.app {
+  grid-template-rows: 32px 236px 1fr;
+}
+
+.pet {
+  width: 166px;
+  height: 178px;
+  margin-top: 0;
+  border-radius: 8px;
+  filter: drop-shadow(0 16px 24px rgba(50, 38, 42, 0.22));
+  cursor: grab;
+}
+
+.pet::after {
+  position: absolute;
+  left: 42px;
+  bottom: -2px;
+  z-index: 0;
+  width: 82px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(74, 55, 60, 0.12);
+  content: "";
+  pointer-events: none;
+}
+
+.hair-bun {
+  top: 4px;
+  left: 68px;
+  z-index: 6;
+  width: 31px;
+  height: 28px;
+  border-radius: 54% 46% 52% 48%;
+  background:
+    radial-gradient(circle at 38% 25%, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(145deg, #3a3131, #151416 76%);
+}
+
+.hair-tie {
+  right: -4px;
+  bottom: 5px;
+  width: 18px;
+  height: 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffe68b, #89ddd2);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.72);
+}
+
+.hair-back {
+  top: 18px;
+  left: 29px;
+  z-index: 1;
+  width: 108px;
+  height: 95px;
+  border-radius: 54% 54% 45% 45%;
+  background:
+    radial-gradient(circle at 34% 22%, rgba(255, 255, 255, 0.12), transparent 22%),
+    linear-gradient(155deg, #302727 0%, #171618 80%);
+  box-shadow: inset 0 -11px 0 rgba(0, 0, 0, 0.16);
+}
+
+.hair-side {
+  top: 52px;
+  z-index: 5;
+  width: 27px;
+  height: 57px;
+  border-radius: 42% 42% 54% 54%;
+  background: linear-gradient(180deg, #292323, #161517);
+}
+
+.hair-left {
+  left: 28px;
+  transform: rotate(8deg);
+}
+
+.hair-right {
+  right: 28px;
+  transform: rotate(-8deg);
+}
+
+.head {
+  top: 31px;
+  left: 37px;
+  z-index: 4;
+  width: 92px;
+  height: 84px;
+  border-radius: 49% 49% 46% 46%;
+  background:
+    radial-gradient(circle at 50% 76%, rgba(255, 202, 186, 0.36), transparent 31%),
+    linear-gradient(160deg, #ffe5d0 0%, #fff1e2 56%, #ffd5bf 100%);
+  box-shadow:
+    inset 0 -8px 0 rgba(221, 119, 92, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.76);
+}
+
+.fringe {
+  top: -8px;
+  z-index: 7;
+  width: 25px;
+  height: 32px;
+  border-radius: 70% 30% 72% 28%;
+  background: linear-gradient(180deg, #2f2727, #161517);
+}
+
+.fringe-one {
+  left: 12px;
+  transform: rotate(18deg);
+}
+
+.fringe-two {
+  left: 34px;
+  width: 22px;
+  height: 36px;
+  transform: rotate(2deg);
+}
+
+.fringe-three {
+  right: 12px;
+  transform: rotate(-18deg) scaleX(-1);
+}
+
+.face-glow {
+  top: 23px;
+  width: 52px;
+  height: 18px;
+  background: rgba(255, 239, 214, 0.56);
+}
+
+.eye {
+  top: 36px;
+  z-index: 8;
+  width: 12px;
+  height: 15px;
+  border-radius: 52% 52% 56% 56%;
+  background: #202026;
+}
+
+.eye span {
+  top: 3px;
+  left: 4px;
+  width: 4px;
+  height: 4px;
+}
+
+.eye-left {
+  left: 25px;
+}
+
+.eye-right {
+  right: 25px;
+}
+
+.cheek {
+  top: 55px;
+  z-index: 8;
+  width: 16px;
+  height: 8px;
+  background: rgba(255, 119, 143, 0.42);
+}
+
+.cheek-left {
+  left: 16px;
+}
+
+.cheek-right {
+  right: 16px;
+}
+
+.mouth {
+  top: 59px;
+  z-index: 8;
+  width: 17px;
+  height: 8px;
+  border: 0;
+  border-bottom: 3px solid #79383d;
+  border-radius: 0 0 16px 16px;
+}
+
+.neck {
+  top: 107px;
+  left: 72px;
+  z-index: 2;
+  width: 22px;
+  height: 16px;
+  background: #ffd9c1;
+}
+
+.body {
+  top: 113px;
+  left: 44px;
+  z-index: 3;
+  width: 78px;
+  height: 52px;
+  border-radius: 26px 26px 20px 20px;
+  background:
+    radial-gradient(circle at 50% 9px, rgba(255, 255, 255, 0.32), transparent 18px),
+    linear-gradient(150deg, #ff4964 0%, #d91c3a 100%);
+  box-shadow:
+    inset 0 -7px 0 rgba(109, 16, 32, 0.16),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.24);
+}
+
+.collar {
+  top: -1px;
+  z-index: 7;
+  width: 29px;
+  height: 22px;
+  border-radius: 10px 10px 15px 15px;
+  background: #fff8ef;
+}
+
+.collar-left {
+  left: 18px;
+  transform: rotate(16deg);
+}
+
+.collar-right {
+  right: 18px;
+  transform: rotate(-16deg);
+}
+
+.dress {
+  top: 20px;
+  left: 19px;
+  z-index: 4;
+  width: 40px;
+  height: 36px;
+  border-radius: 9px 9px 17px 17px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.48) 0 2px, transparent 2px 10px) 0 0 / 12px 12px,
+    linear-gradient(180deg, #fff7ee, #ffe3d7);
+}
+
+.coat-panel {
+  top: 19px;
+  z-index: 5;
+  width: 22px;
+  height: 33px;
+  border-radius: 12px 12px 15px 15px;
+  background: linear-gradient(160deg, #ff5b72, #d91c3a);
+}
+
+.coat-left {
+  left: 7px;
+  transform: rotate(5deg);
+}
+
+.coat-right {
+  right: 7px;
+  transform: rotate(-5deg);
+}
+
+.core-light {
+  top: 25px;
+  z-index: 8;
+  width: 10px;
+  height: 10px;
+  border-radius: 4px 4px 9px 9px;
+}
+
+.core-light::before,
+.core-light::after {
+  width: 10px;
+  height: 10px;
+}
+
+.core-light::before {
+  left: -5px;
+}
+
+.core-light::after {
+  top: -5px;
+}
+
+.bunny-pocket {
+  right: 12px;
+  bottom: 8px;
+  z-index: 8;
+  width: 18px;
+  height: 14px;
+  border-radius: 8px 8px 10px 10px;
+  background: #6fa7c5;
+}
+
+.bunny-pocket::before,
+.bunny-pocket::after {
+  top: -8px;
+  width: 6px;
+  height: 12px;
+  border-radius: 6px 6px 3px 3px;
+  background: #6fa7c5;
+}
+
+.bunny-pocket span {
+  left: 6px;
+  top: 5px;
+  width: 6px;
+  height: 4px;
+}
+
+.arm {
+  top: 15px;
+  z-index: 2;
+  width: 22px;
+  height: 42px;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #f8cad8, #ef99b4);
+}
+
+.arm-left {
+  left: -8px;
+  transform: rotate(21deg);
+}
+
+.arm-right {
+  right: -8px;
+  transform: rotate(-21deg);
+}
+
+.hand {
+  bottom: -4px;
+  left: 4px;
+  width: 14px;
+  height: 14px;
+  background: #ffd9c1;
+}
+
+.leg {
+  top: 158px;
+  z-index: 1;
+  width: 16px;
+  height: 19px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, #f4df9c, #d8bf77);
+}
+
+.leg-left {
+  left: 61px;
+}
+
+.leg-right {
+  right: 61px;
+}
+
+.shoe {
+  top: 171px;
+  z-index: 2;
+  width: 27px;
+  height: 14px;
+  border-radius: 14px 14px 8px 8px;
+  background: linear-gradient(180deg, #ffd3df, #f49cb9);
+}
+
+.shoe-left {
+  left: 50px;
+  transform: rotate(-4deg);
+}
+
+.shoe-right {
+  right: 50px;
+  transform: rotate(4deg);
+}
+
+.app[data-mood="happy"] .mouth {
+  top: 56px;
+  height: 12px;
+  border: 0;
+  border-bottom: 4px solid #79383d;
+  border-radius: 0 0 18px 18px;
+}
+
+.app[data-mood="happy"] .core-light {
+  background: #fff085;
+  box-shadow: 0 0 22px rgba(255, 240, 133, 0.95);
+}
+
+.app[data-mood="tired"] .eye {
+  top: 43px;
+  height: 5px;
+  border-radius: 10px;
+}
+
+.app[data-mood="sad"] .mouth {
+  top: 63px;
+  height: 8px;
+  border: 0;
+  border-top: 3px solid #79383d;
+  border-radius: 16px 16px 0 0;
+}
+
+.app[data-mood="surprised"] .mouth {
+  top: 58px;
+  width: 11px;
+  height: 12px;
+  border: 3px solid #79383d;
+  border-radius: 50%;
+}
+
+.app[data-mood="stressed"] .head {
+  box-shadow:
+    inset 0 -8px 0 rgba(221, 119, 92, 0.1),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.76),
+    0 0 0 3px rgba(255, 125, 148, 0.18);
+}
+
+/* Photo-inspired girl: twin pigtails, cream quilted vest, pink sleeves, bright smile. */
+.app {
+  grid-template-rows: 32px 270px 1fr;
+}
+
+.pet {
+  width: 176px;
+  height: 188px;
+  filter: drop-shadow(0 18px 24px rgba(50, 38, 42, 0.2));
+}
+
+.pet::after {
+  left: 43px;
+  bottom: -3px;
+  width: 90px;
+  height: 15px;
+  background: rgba(63, 47, 52, 0.12);
+}
+
+.hair-bun {
+  display: none;
+}
+
+.pigtail {
+  position: absolute;
+  top: 45px;
+  z-index: 2;
+  width: 39px;
+  height: 48px;
+  border-radius: 46% 54% 58% 42%;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.12), transparent 22%),
+    linear-gradient(155deg, #30292a, #121214 78%);
+  box-shadow: inset 0 -7px 0 rgba(0, 0, 0, 0.16);
+}
+
+.pigtail-left {
+  left: 24px;
+  transform: rotate(13deg);
+}
+
+.pigtail-right {
+  right: 24px;
+  transform: rotate(-13deg) scaleX(-1);
+}
+
+.pigtail .hair-tie {
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  width: 16px;
+  height: 12px;
+  border-radius: 10px 10px 8px 8px;
+  background: linear-gradient(135deg, #ffd7e2, #f5a7bf);
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.82),
+    inset 0 -2px 0 rgba(199, 84, 120, 0.12);
+}
+
+.hair-back {
+  top: 20px;
+  left: 31px;
+  width: 114px;
+  height: 92px;
+  border-radius: 54% 54% 42% 42%;
+  background:
+    radial-gradient(circle at 38% 18%, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(160deg, #332b2c 0%, #171618 76%);
+}
+
+.hair-side {
+  top: 58px;
+  z-index: 6;
+  width: 24px;
+  height: 52px;
+  border-radius: 42% 42% 58% 58%;
+  background: linear-gradient(180deg, #282223, #151416);
+}
+
+.hair-left {
+  left: 34px;
+  transform: rotate(12deg);
+}
+
+.hair-right {
+  right: 34px;
+  transform: rotate(-12deg);
+}
+
+.head {
+  top: 30px;
+  left: 38px;
+  z-index: 5;
+  width: 100px;
+  height: 91px;
+  border-radius: 51% 51% 47% 47%;
+  background:
+    radial-gradient(circle at 25% 62%, rgba(255, 124, 145, 0.28), transparent 15%),
+    radial-gradient(circle at 75% 62%, rgba(255, 124, 145, 0.28), transparent 15%),
+    linear-gradient(160deg, #ffe4d1 0%, #fff1e4 55%, #ffd4be 100%);
+  box-shadow:
+    inset 0 -8px 0 rgba(224, 112, 88, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.78);
+}
+
+.fringe {
+  top: -7px;
+  z-index: 8;
+  width: 28px;
+  height: 37px;
+  border-radius: 72% 28% 72% 28%;
+  background: linear-gradient(180deg, #302829, #151416);
+}
+
+.fringe-one {
+  left: 11px;
+  transform: rotate(18deg);
+}
+
+.fringe-two {
+  left: 35px;
+  width: 25px;
+  height: 42px;
+  transform: rotate(1deg);
+}
+
+.fringe-three {
+  right: 10px;
+  transform: rotate(-19deg) scaleX(-1);
+}
+
+.face-glow {
+  top: 24px;
+  width: 58px;
+  height: 18px;
+  background: rgba(255, 245, 225, 0.5);
+}
+
+.eye {
+  top: 39px;
+  width: 16px;
+  height: 9px;
+  border-radius: 14px 14px 9px 9px;
+  background: transparent;
+  border-top: 4px solid #202026;
+  transform: rotate(4deg);
+}
+
+.eye span {
+  display: none;
+}
+
+.eye-left {
+  left: 24px;
+}
+
+.eye-right {
+  right: 24px;
+  transform: rotate(-4deg);
+}
+
+.cheek {
+  top: 56px;
+  width: 18px;
+  height: 9px;
+  background: rgba(255, 112, 136, 0.42);
+}
+
+.cheek-left {
+  left: 16px;
+}
+
+.cheek-right {
+  right: 16px;
+}
+
+.mouth {
+  top: 56px;
+  left: 50%;
+  width: 36px;
+  height: 23px;
+  border: 0;
+  border-radius: 7px 7px 22px 22px;
+  background: #7f3338;
+  box-shadow: inset 0 -6px 0 rgba(212, 82, 101, 0.8);
+  overflow: hidden;
+}
+
+.mouth::before {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  width: 26px;
+  height: 7px;
+  border-radius: 0 0 8px 8px;
+  background:
+    linear-gradient(90deg, transparent 0 7px, rgba(120, 70, 72, 0.35) 7px 8px, transparent 8px 17px, rgba(120, 70, 72, 0.35) 17px 18px, transparent 18px),
+    #fff7ef;
+  content: "";
+}
+
+.mouth::after {
+  position: absolute;
+  right: 7px;
+  bottom: 2px;
+  width: 15px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 132, 154, 0.78);
+  content: "";
+}
+
+.neck {
+  top: 111px;
+  left: 76px;
+  width: 24px;
+  height: 18px;
+  background: #ffd9c1;
+}
+
+.body {
+  top: 120px;
+  left: 42px;
+  width: 92px;
+  height: 58px;
+  border-radius: 27px 27px 20px 20px;
+  background:
+    radial-gradient(circle at 50% 16px, rgba(255, 255, 255, 0.75), transparent 18px),
+    linear-gradient(90deg, rgba(219, 190, 154, 0.2) 0 1px, transparent 1px 13px) 0 0 / 14px 100%,
+    linear-gradient(180deg, #fff8ec 0%, #f4e7d2 100%);
+  box-shadow:
+    inset 0 -7px 0 rgba(176, 138, 101, 0.1),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.82);
+}
+
+.body::before,
+.body::after {
+  position: absolute;
+  top: 13px;
+  width: 29px;
+  height: 33px;
+  border-radius: 50%;
+  border: 2px solid rgba(219, 190, 154, 0.34);
+  border-top: 0;
+  content: "";
+}
+
+.body::before {
+  left: 8px;
+  transform: rotate(-10deg);
+}
+
+.body::after {
+  right: 8px;
+  transform: rotate(10deg);
+}
+
+.collar {
+  top: -2px;
+  z-index: 8;
+  width: 34px;
+  height: 20px;
+  border-radius: 13px 13px 16px 16px;
+  background: #fffdf8;
+}
+
+.collar-left {
+  left: 17px;
+  transform: rotate(15deg);
+}
+
+.collar-right {
+  right: 17px;
+  transform: rotate(-15deg);
+}
+
+.dress,
+.coat-panel {
+  display: none;
+}
+
+.vest-line {
+  position: absolute;
+  top: 12px;
+  z-index: 7;
+  width: 2px;
+  height: 41px;
+  border-radius: 3px;
+  background: rgba(218, 184, 144, 0.36);
+}
+
+.vest-line-left {
+  left: 33px;
+}
+
+.vest-line-right {
+  right: 33px;
+}
+
+.vest-button {
+  position: absolute;
+  left: 50%;
+  z-index: 8;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fffdf8;
+  box-shadow:
+    0 0 0 1px rgba(201, 166, 128, 0.34),
+    inset 0 -1px 0 rgba(184, 147, 112, 0.12);
+  transform: translateX(-50%);
+}
+
+.vest-button-one {
+  top: 13px;
+}
+
+.vest-button-two {
+  top: 28px;
+}
+
+.vest-button-three {
+  top: 43px;
+}
+
+.core-light {
+  top: 35px;
+  left: 69%;
+  z-index: 9;
+  width: 8px;
+  height: 8px;
+  background: #ffd36a;
+  opacity: 0.88;
+}
+
+.core-light::before,
+.core-light::after {
+  width: 8px;
+  height: 8px;
+}
+
+.core-light::before {
+  left: -4px;
+}
+
+.core-light::after {
+  top: -4px;
+}
+
+.bunny-pocket {
+  left: 10px;
+  right: auto;
+  bottom: 10px;
+  width: 20px;
+  height: 15px;
+  background: #d2a879;
+  opacity: 0.8;
+}
+
+.bunny-pocket::before,
+.bunny-pocket::after {
+  top: -8px;
+  background: #d2a879;
+}
+
+.bunny-pocket span {
+  display: none;
+}
+
+.arm {
+  top: 12px;
+  z-index: 1;
+  width: 25px;
+  height: 50px;
+  border-radius: 17px;
+  background: linear-gradient(180deg, #ffd7e0, #f2a9bd);
+  box-shadow: inset 0 -7px 0 rgba(255, 255, 255, 0.48);
+}
+
+.arm-left {
+  left: -14px;
+  transform: rotate(22deg);
+}
+
+.arm-right {
+  right: -14px;
+  transform: rotate(-22deg);
+}
+
+.hand {
+  bottom: -4px;
+  left: 5px;
+  width: 15px;
+  height: 15px;
+  background: #ffd8bf;
+}
+
+.leg {
+  top: 172px;
+  width: 15px;
+  height: 17px;
+  background: linear-gradient(180deg, #fff5ee, #f7d7df);
+}
+
+.leg-left {
+  left: 64px;
+}
+
+.leg-right {
+  right: 64px;
+}
+
+.shoe {
+  top: 183px;
+  width: 28px;
+  height: 13px;
+  background: linear-gradient(180deg, #ffd2de, #f4a1bb);
+}
+
+.shoe-left {
+  left: 53px;
+}
+
+.shoe-right {
+  right: 53px;
+}
+
+.app[data-mood="happy"] .mouth,
+.app[data-mood="calm"] .mouth,
+.app[data-mood="focused"] .mouth,
+.app[data-mood="thinking"] .mouth {
+  top: 56px;
+  width: 36px;
+  height: 23px;
+  border: 0;
+  border-radius: 7px 7px 22px 22px;
+  background: #7f3338;
+  box-shadow: inset 0 -6px 0 rgba(212, 82, 101, 0.8);
+}
+
+.app[data-mood="happy"] .core-light {
+  background: #fff085;
+  box-shadow: 0 0 20px rgba(255, 240, 133, 0.95);
+}
+
+.app[data-mood="tired"] .eye {
+  top: 43px;
+  height: 8px;
+  border-top-width: 4px;
+}
+
+.app[data-mood="tired"] .mouth {
+  top: 62px;
+  width: 22px;
+  height: 7px;
+  border-radius: 0 0 16px 16px;
+}
+
+.app[data-mood="sad"] .mouth {
+  top: 66px;
+  width: 22px;
+  height: 8px;
+  border: 0;
+  border-top: 3px solid #79383d;
+  border-radius: 16px 16px 0 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app[data-mood="sad"] .mouth::before,
+.app[data-mood="sad"] .mouth::after,
+.app[data-mood="surprised"] .mouth::before,
+.app[data-mood="surprised"] .mouth::after {
+  display: none;
+}
+
+.app[data-mood="surprised"] .eye {
+  top: 37px;
+  width: 12px;
+  height: 15px;
+  border: 0;
+  border-radius: 50%;
+  background: #202026;
+}
+
+.app[data-mood="surprised"] .mouth {
+  top: 58px;
+  width: 15px;
+  height: 17px;
+  border: 3px solid #79383d;
+  border-radius: 50%;
+  background: #8a3b41;
+  box-shadow: none;
+}
+
+.app[data-mood="stressed"] .head {
+  box-shadow:
+    inset 0 -8px 0 rgba(224, 112, 88, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.78),
+    0 0 0 3px rgba(255, 147, 166, 0.22);
+}
+
+/* Final polish: softer hair and closed mouth by default. */
+.hair-back {
+  top: 21px;
+  left: 33px;
+  width: 110px;
+  height: 92px;
+  border-radius: 56% 56% 44% 44%;
+  background:
+    radial-gradient(circle at 35% 18%, rgba(255, 255, 255, 0.18), transparent 21%),
+    linear-gradient(155deg, #302a2a 0%, #1b191b 58%, #111113 100%);
+  box-shadow:
+    inset 0 -9px 0 rgba(0, 0, 0, 0.14),
+    inset 8px 0 0 rgba(255, 255, 255, 0.03);
+}
+
+.hair-back::before,
+.hair-back::after {
+  position: absolute;
+  top: 18px;
+  width: 25px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #2d2728, #141315);
+  content: "";
+}
+
+.hair-back::before {
+  left: -6px;
+  transform: rotate(12deg);
+}
+
+.hair-back::after {
+  right: -6px;
+  transform: rotate(-12deg);
+}
+
+.pigtail {
+  top: 48px;
+  width: 34px;
+  height: 42px;
+  border-radius: 58% 42% 62% 38%;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.14), transparent 24%),
+    linear-gradient(150deg, #332c2d 0%, #171618 78%);
+  box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.14);
+}
+
+.pigtail-left {
+  left: 25px;
+  transform: rotate(9deg);
+}
+
+.pigtail-right {
+  right: 25px;
+  transform: rotate(-9deg) scaleX(-1);
+}
+
+.pigtail .hair-tie {
+  top: 10px;
+  right: -3px;
+  width: 15px;
+  height: 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffe0e8, #f5a5bd);
+}
+
+.hair-side {
+  top: 61px;
+  width: 18px;
+  height: 44px;
+  border-radius: 50% 50% 56% 56%;
+}
+
+.hair-left {
+  left: 40px;
+  transform: rotate(9deg);
+}
+
+.hair-right {
+  right: 40px;
+  transform: rotate(-9deg);
+}
+
+.fringe {
+  top: -8px;
+  height: 34px;
+  border-radius: 76% 24% 74% 26%;
+}
+
+.fringe-one {
+  left: 13px;
+  width: 25px;
+  transform: rotate(14deg);
+}
+
+.fringe-two {
+  left: 35px;
+  width: 24px;
+  height: 39px;
+  transform: rotate(1deg);
+}
+
+.fringe-three {
+  right: 13px;
+  width: 25px;
+  transform: rotate(-14deg) scaleX(-1);
+}
+
+.head {
+  top: 32px;
+  left: 39px;
+  width: 98px;
+  height: 89px;
+}
+
+.eye {
+  top: 40px;
+  width: 17px;
+  height: 9px;
+  border-top-width: 4px;
+}
+
+.cheek {
+  top: 58px;
+}
+
+.app .mouth,
+.app[data-mood="happy"] .mouth,
+.app[data-mood="calm"] .mouth,
+.app[data-mood="focused"] .mouth,
+.app[data-mood="thinking"] .mouth,
+.app[data-mood="tired"] .mouth,
+.app[data-mood="surprised"] .mouth {
+  top: 64px;
+  left: 50%;
+  width: 24px;
+  height: 10px;
+  border: 0;
+  border-bottom: 3px solid #79383d;
+  border-radius: 0 0 18px 18px;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.app .mouth::before,
+.app .mouth::after {
+  display: none;
+}
+
+.app[data-mood="sad"] .mouth {
+  top: 69px;
+  width: 22px;
+  height: 8px;
+  border: 0;
+  border-top: 3px solid #79383d;
+  border-radius: 16px 16px 0 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app.is-speaking .mouth,
+.app.is-speaking[data-mood="happy"] .mouth,
+.app.is-speaking[data-mood="calm"] .mouth,
+.app.is-speaking[data-mood="focused"] .mouth,
+.app.is-speaking[data-mood="thinking"] .mouth,
+.app.is-speaking[data-mood="tired"] .mouth,
+.app.is-speaking[data-mood="sad"] .mouth,
+.app.is-speaking[data-mood="surprised"] .mouth {
+  top: 57px;
+  width: 34px;
+  height: 22px;
+  border: 0;
+  border-radius: 8px 8px 20px 20px;
+  background: #7f3338;
+  box-shadow: inset 0 -6px 0 rgba(212, 82, 101, 0.78);
+  overflow: hidden;
+}
+
+.app.is-speaking .mouth::before {
+  position: absolute;
+  top: 0;
+  left: 5px;
+  display: block;
+  width: 24px;
+  height: 7px;
+  border-radius: 0 0 8px 8px;
+  background:
+    linear-gradient(90deg, transparent 0 7px, rgba(120, 70, 72, 0.35) 7px 8px, transparent 8px 16px, rgba(120, 70, 72, 0.35) 16px 17px, transparent 17px),
+    #fff7ef;
+  content: "";
+}
+
+.app.is-speaking .mouth::after {
+  position: absolute;
+  right: 6px;
+  bottom: 2px;
+  display: block;
+  width: 14px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 132, 154, 0.78);
+  content: "";
+}
+
+/* Cohesive SVG character. */
+.pet {
+  width: 178px;
+  height: 218px;
+  margin-top: -3px;
+  overflow: visible;
+}
+
+.pet::after {
+  display: none;
+}
+
+.pet-portrait {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.girl-sprite {
+  transform-origin: 110px 140px;
+  transition: transform 180ms ease;
+}
+
+.pet:hover .girl-sprite {
+  transform: translateY(-2px);
+}
+
+.girl-shadow {
+  fill: rgba(75, 54, 57, 0.13);
+}
+
+.girl-hair,
+.girl-bangs,
+.girl-pigtail {
+  fill: #211f21;
+  fill: url(#girlHair);
+}
+
+.girl-hair {
+  filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.08));
+}
+
+.girl-hair-strand {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-linecap: round;
+  stroke-width: 2.2;
+}
+
+.girl-tie {
+  fill: #ffc6d5;
+  stroke: rgba(255, 255, 255, 0.86);
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.girl-tie-wing {
+  fill: #f5a8bf;
+}
+
+.girl-face {
+  fill: #ffe4d1;
+  fill: url(#girlSkin);
+  stroke: rgba(255, 255, 255, 0.74);
+  stroke-width: 2;
+}
+
+.girl-cheek {
+  fill: rgba(255, 117, 139, 0.4);
+}
+
+.girl-eye {
+  fill: none;
+  stroke: #222126;
+  stroke-linecap: round;
+  stroke-width: 5;
+}
+
+.girl-mouth-closed {
+  fill: none;
+  stroke: #77383e;
+  stroke-linecap: round;
+  stroke-width: 4;
+  transition: opacity 130ms ease;
+}
+
+.girl-mouth-open {
+  opacity: 0;
+  transform: scaleY(0.12);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    opacity 130ms ease,
+    transform 130ms ease;
+}
+
+.girl-mouth-cavity {
+  fill: #7d3339;
+}
+
+.girl-teeth {
+  fill: #fff8f0;
+}
+
+.girl-tongue {
+  fill: #ff879d;
+}
+
+.app.is-speaking .girl-mouth-closed {
+  opacity: 0;
+}
+
+.app.is-speaking .girl-mouth-open {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.girl-neck,
+.girl-hand,
+.girl-leg {
+  fill: #ffd9c2;
+}
+
+.girl-arm {
+  fill: #f3a5bc;
+  fill: url(#girlSleeve);
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 2;
+}
+
+.girl-vest {
+  fill: #fff8ec;
+  fill: url(#girlVest);
+  stroke: rgba(220, 188, 148, 0.4);
+  stroke-width: 2;
+}
+
+.girl-collar {
+  fill: #fffdf8;
+  stroke: rgba(222, 190, 154, 0.28);
+  stroke-width: 1.5;
+}
+
+.girl-quilt {
+  fill: none;
+  stroke: rgba(211, 178, 139, 0.42);
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.girl-button {
+  fill: #fffdf8;
+  stroke: rgba(201, 166, 128, 0.42);
+  stroke-width: 1.5;
+}
+
+.girl-shoe {
+  fill: #f5a7bf;
+  stroke: rgba(199, 84, 120, 0.12);
+  stroke-width: 1.5;
+}
+
+.app[data-mood="tired"] .girl-eye {
+  stroke-width: 4;
+  transform: translateY(4px);
+}
+
+.app[data-mood="sad"] .girl-mouth-closed {
+  transform: rotate(180deg);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.app[data-mood="surprised"] .girl-mouth-closed {
+  opacity: 1;
+}
+
+/* User-provided image pet with movable overlays. */
+.app {
+  grid-template-rows: 32px 310px 1fr;
+}
+
+.pet.photo-pet {
+  width: 156px;
+  height: 226px;
+  margin-top: 0;
+  border-radius: 8px;
+  filter: drop-shadow(0 16px 20px rgba(54, 38, 35, 0.18));
+  overflow: visible;
+}
+
+.pet.photo-pet::after {
+  display: none;
+}
+
+.photo-character {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transform-origin: 50% 72%;
+  animation: none;
+}
+
+.photo-character-image {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: auto;
+  height: 226px;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(-50%);
+}
+
+.photo-mouth-mask,
+.photo-mouth,
+.photo-eye,
+.photo-gaze,
+.photo-hand,
+.photo-foot {
+  position: absolute;
+  pointer-events: none;
+}
+
+.photo-mouth-mask {
+  display: none;
+  left: 50%;
+  top: 31.1%;
+  z-index: 3;
+  width: 33px;
+  height: 18px;
+  border-radius: 46% 46% 54% 54%;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 246, 232, 0.88), transparent 58%),
+    linear-gradient(180deg, #ffe0c9 0%, #ffd0b8 100%);
+  box-shadow: 0 -1px 0 rgba(125, 61, 54, 0.06);
+  transform: translateX(-50%);
+}
+
+.photo-mouth {
+  left: 50%;
+  top: 31.8%;
+  z-index: 4;
+  width: 31px;
+  height: 20px;
+  opacity: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: translateX(-50%);
+  transform-origin: 50% 20%;
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.photo-mouth::before,
+.photo-mouth::after {
+  position: absolute;
+  display: none;
+  content: "";
+}
+
+.app.is-speaking .photo-mouth {
+  opacity: 1;
+  animation: photoTalk 420ms ease-in-out infinite;
+}
+
+.app.is-speaking .photo-mouth::before {
+  top: 1px;
+  left: 5px;
+  display: block;
+  width: 17px;
+  height: 5px;
+  border-radius: 0 0 8px 8px;
+  background: #fff8f0;
+}
+
+.app.is-speaking .photo-mouth::after {
+  right: 5px;
+  bottom: 2px;
+  display: block;
+  width: 12px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 139, 157, 0.8);
+}
+
+.app[data-mood="sad"] .photo-mouth {
+  top: 34.2%;
+  width: 20px;
+  height: 7px;
+  border-top: 3px solid #83383c;
+  border-bottom: 0;
+  border-radius: 18px 18px 0 0;
+}
+
+.app.is-speaking[data-mood="sad"] .photo-mouth {
+  top: 31.6%;
+  border: 0;
+  border-radius: 8px 8px 18px 18px;
+}
+
+.photo-eye {
+  z-index: 4;
+  top: 27.1%;
+  width: 21px;
+  height: 13px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 230, 212, 0.98), rgba(255, 214, 194, 0.98));
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: center;
+  animation: none;
+}
+
+.photo-eye-left {
+  left: 37.5%;
+}
+
+.photo-eye-right {
+  right: 37.5%;
+}
+
+.app[data-mood="tired"] .photo-eye {
+  opacity: 0.9;
+  transform: scaleY(0.42);
+  animation: none;
+}
+
+.photo-gaze {
+  z-index: 5;
+  top: 26.2%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.72);
+  transform: translate(var(--eye-x), var(--eye-y));
+  transition: transform 80ms ease-out;
+}
+
+.photo-gaze-left {
+  left: 42.4%;
+}
+
+.photo-gaze-right {
+  right: 42.4%;
+}
+
+.photo-hand {
+  z-index: 5;
+  top: 67.1%;
+  width: 20px;
+  height: 20px;
+  border-radius: 52% 48% 45% 55%;
+  background: linear-gradient(160deg, #ffe4d2, #ffd0b9);
+  box-shadow:
+    inset -2px -3px 0 rgba(177, 82, 62, 0.12),
+    0 0 0 1px rgba(121, 54, 45, 0.12);
+  transform-origin: 50% 20%;
+}
+
+.photo-hand-left {
+  left: 7%;
+  transform: rotate(13deg);
+}
+
+.photo-hand-right {
+  right: 7%;
+  transform: rotate(-13deg);
+}
+
+.photo-foot {
+  z-index: 5;
+  top: 93.7%;
+  width: 36px;
+  height: 17px;
+  border-radius: 18px 18px 9px 9px;
+  background: linear-gradient(180deg, #ffe4d7, #f6b7aa);
+  box-shadow:
+    inset 0 -3px 0 rgba(172, 82, 71, 0.14),
+    0 0 0 1px rgba(121, 54, 45, 0.12);
+  transform-origin: center;
+}
+
+.photo-foot-left {
+  left: 25.4%;
+  transform: rotate(-2deg);
+}
+
+.photo-foot-right {
+  right: 25.4%;
+  transform: rotate(2deg);
+}
+
+.pet.photo-pet:hover .photo-hand-left,
+.pet.photo-pet.is-booped .photo-hand-left,
+.app.is-speaking .photo-hand-left {
+  animation: photoWaveLeft 620ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-hand-right,
+.pet.photo-pet.is-booped .photo-hand-right,
+.app.is-speaking .photo-hand-right {
+  animation: photoWaveRight 620ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-foot-left,
+.pet.photo-pet.is-booped .photo-foot-left,
+.app.is-speaking .photo-foot-left {
+  animation: photoStepLeft 720ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-foot-right,
+.pet.photo-pet.is-booped .photo-foot-right,
+.app.is-speaking .photo-foot-right {
+  animation: photoStepRight 720ms ease-in-out infinite;
+}
+
+@keyframes photoIdle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes photoBlink {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  91%,
+  94% {
+    opacity: 0.95;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes photoTalk {
+  0%,
+  100% {
+    transform: translateX(-50%) scaleY(0.82);
+  }
+  50% {
+    transform: translateX(-50%) scaleY(1.08);
+  }
+}
+
+@keyframes photoWaveLeft {
+  0%,
+  100% {
+    transform: rotate(13deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-13deg) translateY(-5px);
+  }
+}
+
+@keyframes photoWaveRight {
+  0%,
+  100% {
+    transform: rotate(-13deg) translateY(0);
+  }
+  50% {
+    transform: rotate(13deg) translateY(-5px);
+  }
+}
+
+@keyframes photoStepLeft {
+  0%,
+  100% {
+    transform: rotate(-2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-7deg) translateY(-3px);
+  }
+}
+
+@keyframes photoStepRight {
+  0%,
+  100% {
+    transform: rotate(2deg) translateY(0);
+  }
+  50% {
+    transform: rotate(7deg) translateY(-3px);
+  }
+}
+
+/* Use real cutout layers from the provided image for moving hands and feet. */
+.photo-mouth-mask {
+  display: none;
+  top: 31.6%;
+  width: 28px;
+  height: 14px;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 247, 235, 0.92), transparent 55%),
+    linear-gradient(180deg, #ffe3cc 0%, #ffd1ba 100%);
+}
+
+.photo-mouth {
+  top: 31.8%;
+  width: 31px;
+  height: 20px;
+  opacity: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.app.is-speaking .photo-mouth,
+.app.is-speaking[data-mood="sad"] .photo-mouth {
+  top: 31.8%;
+  width: 31px;
+  height: 20px;
+  opacity: 1;
+}
+
+.photo-mouth-closed {
+  fill: none;
+  stroke: #7d3339;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.photo-mouth-open-shape {
+  opacity: 0;
+  transform: scaleY(0.45);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.photo-mouth-cavity {
+  fill: #803139;
+}
+
+.photo-mouth-teeth {
+  fill: #fff8f0;
+}
+
+.photo-mouth-tongue {
+  fill: #ff8fa4;
+}
+
+.app.is-speaking .photo-mouth-closed {
+  opacity: 0;
+}
+
+.app.is-speaking .photo-mouth-open-shape {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.photo-layer {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 5;
+  width: auto;
+  height: 226px;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  transform: translateX(-50%);
+}
+
+.photo-hand,
+.photo-foot {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.photo-hand-left {
+  transform-origin: 18% 69%;
+}
+
+.photo-hand-right {
+  transform-origin: 82% 69%;
+}
+
+.photo-foot-left {
+  transform-origin: 37% 95%;
+}
+
+.photo-foot-right {
+  transform-origin: 63% 95%;
+}
+
+.photo-character,
+.photo-eye {
+  animation: none;
+}
+
+.pet.photo-pet:hover .photo-character,
+.pet.photo-pet.is-booped .photo-character,
+.app.is-speaking .photo-character {
+  animation: photoIdle 3.8s ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-eye,
+.app.is-speaking .photo-eye {
+  animation: photoBlink 5.2s infinite;
+}
+
+.pet.photo-pet:hover .photo-hand-left,
+.pet.photo-pet.is-booped .photo-hand-left,
+.app.is-speaking .photo-hand-left {
+  animation: photoRealHandLeft 700ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-hand-right,
+.pet.photo-pet.is-booped .photo-hand-right,
+.app.is-speaking .photo-hand-right {
+  animation: photoRealHandRight 700ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-foot-left,
+.pet.photo-pet.is-booped .photo-foot-left,
+.app.is-speaking .photo-foot-left {
+  animation: photoRealFootLeft 760ms ease-in-out infinite;
+}
+
+.pet.photo-pet:hover .photo-foot-right,
+.pet.photo-pet.is-booped .photo-foot-right,
+.app.is-speaking .photo-foot-right {
+  animation: photoRealFootRight 760ms ease-in-out infinite;
+}
+
+@keyframes photoRealHandLeft {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(-7deg) translateY(-3px);
+  }
+}
+
+@keyframes photoRealHandRight {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(7deg) translateY(-3px);
+  }
+}
+
+@keyframes photoRealFootLeft {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(-4deg) translateY(-2px);
+  }
+}
+
+@keyframes photoRealFootRight {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(4deg) translateY(-2px);
+  }
+}
+
+#settingsView {
+  overflow: auto;
+  padding-right: 2px;
+}
+
+/* Bubble and side controls behavior. */
+.bubble {
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.bubble.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px) scale(0.98);
+}
+
+.window-bar {
+  top: 92px;
+  right: -48px;
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(255, 252, 247, 0.9);
+}
+
+.app.controls-visible .window-bar,
+.window-bar:hover,
+.window-bar:focus-within {
+  right: 7px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.app.is-compact .window-bar {
+  top: 72px;
+}
+
+/* Compact chat panel polish. */
+.app {
+  grid-template-rows: 28px 324px 1fr;
+}
+
+.panel {
+  align-self: end;
+  width: calc(100vw - 28px);
+  height: 176px;
+  margin-bottom: 6px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) 28px;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.tab {
+  height: 26px;
+  min-height: 26px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.panel-close {
+  width: 28px;
+  height: 26px;
+  min-width: 28px;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.view {
+  height: calc(100% - 31px);
+}
+
+#chatView {
+  gap: 5px;
+}
+
+.messages {
+  padding: 1px 1px 0;
+}
+
+.message {
+  max-width: 82%;
+  margin-bottom: 5px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.32;
+}
+
+.message.user {
+  border-radius: 8px 8px 3px 8px;
+}
+
+.message.assistant {
+  border-radius: 8px 8px 8px 3px;
+}
+
+.composer {
+  grid-template-columns: 1fr 28px;
+  gap: 5px;
+  align-items: end;
+}
+
+.composer textarea {
+  min-height: 28px;
+  max-height: 40px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.send-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.reminder-form .send-button {
+  width: 34px;
+  height: 36px;
+  min-width: 34px;
+}

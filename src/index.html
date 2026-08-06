@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src https: http:;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>皙皙</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app" id="app" data-mood="calm">
+      <header class="window-bar">
+        <button class="icon-button" id="compactBtn" type="button" title="收起">↕</button>
+        <button class="icon-button is-active" id="pinBtn" type="button" title="置顶">⌃</button>
+        <button class="icon-button" id="hideBtn" type="button" title="隐藏">×</button>
+      </header>
+
+      <section class="pet-zone" aria-label="皙皙">
+        <p class="bubble" id="bubble">我在。点点我，或者跟我说句话。</p>
+
+        <button class="pet photo-pet" id="petButton" type="button" aria-label="摸摸皙皙">
+          <span class="photo-character" aria-hidden="true">
+            <img class="photo-character-image" src="./assets/girl-companion.png" alt="" draggable="false" />
+            <span class="photo-eye photo-eye-left"></span>
+            <span class="photo-eye photo-eye-right"></span>
+            <span class="photo-gaze photo-gaze-left"></span>
+            <span class="photo-gaze photo-gaze-right"></span>
+            <svg class="photo-mouth" viewBox="0 0 48 30" aria-hidden="true">
+              <path class="photo-mouth-closed" d="M15 12 C21 18 27 18 33 12" />
+              <g class="photo-mouth-open-shape">
+                <path class="photo-mouth-cavity" d="M13 10 C18 27 31 27 36 10 C29 16 20 16 13 10 Z" />
+                <path class="photo-mouth-teeth" d="M17 11 C22 14 28 14 33 11 L31 16 C26 18 23 18 18 16 Z" />
+                <ellipse class="photo-mouth-tongue" cx="25" cy="23" rx="8" ry="3.5" />
+              </g>
+            </svg>
+            <img class="photo-layer photo-hand photo-hand-left" src="./assets/girl-hand-left.png" alt="" draggable="false" />
+            <img class="photo-layer photo-hand photo-hand-right" src="./assets/girl-hand-right.png" alt="" draggable="false" />
+            <img class="photo-layer photo-foot photo-foot-left" src="./assets/girl-foot-left.png" alt="" draggable="false" />
+            <img class="photo-layer photo-foot photo-foot-right" src="./assets/girl-foot-right.png" alt="" draggable="false" />
+          </span>
+        </button>
+
+        <div class="status-row">
+          <span id="moodLabel">平静</span>
+          <span id="modelStatus">本地陪伴</span>
+        </div>
+      </section>
+
+      <section class="panel" id="panel">
+        <nav class="tabs" aria-label="功能">
+          <button class="tab is-active" data-tab="chat" type="button">聊天</button>
+          <button class="tab" data-tab="reminders" type="button">提醒</button>
+          <button class="tab" data-tab="camera" type="button">情绪</button>
+          <button class="tab" data-tab="settings" type="button">设置</button>
+          <button class="panel-close icon-button" id="panelCloseBtn" type="button" title="关闭对话框">×</button>
+        </nav>
+
+        <section class="view is-active" id="chatView">
+          <div class="messages" id="messages" aria-live="polite"></div>
+          <form class="composer" id="chatForm">
+            <textarea id="chatInput" rows="1" placeholder="跟皙皙说点什么"></textarea>
+            <button class="send-button" type="submit" title="发送">➤</button>
+          </form>
+        </section>
+
+        <section class="view" id="remindersView">
+          <form class="reminder-form" id="reminderForm">
+            <input id="reminderText" type="text" maxlength="80" placeholder="提醒内容" />
+            <input id="reminderTime" type="datetime-local" />
+            <button class="send-button" type="submit" title="添加">＋</button>
+          </form>
+          <div class="reminder-list" id="reminderList"></div>
+        </section>
+
+        <section class="view" id="cameraView">
+          <div class="camera-actions">
+            <button class="text-button" id="cameraToggle" type="button">开启</button>
+            <button class="icon-button" id="scanBtn" type="button" title="识别一次">◎</button>
+            <span id="emotionStatus">未开启</span>
+          </div>
+          <video class="camera-preview" id="cameraPreview" autoplay muted playsinline></video>
+          <canvas id="cameraCanvas" hidden></canvas>
+          <div class="emotion-card" id="emotionCard">
+            <span id="emotionLabel">等待识别</span>
+            <p id="emotionReason">开启摄像头后，我会只在你允许时观察当前状态。</p>
+          </div>
+        </section>
+
+        <section class="view" id="settingsView">
+          <div class="setting-row">
+            <span>模型</span>
+            <strong id="configText">读取中</strong>
+          </div>
+          <label class="toggle-row">
+            <input id="alwaysTopToggle" type="checkbox" checked />
+            <span>保持置顶</span>
+          </label>
+          <label class="toggle-row">
+            <input id="quietToggle" type="checkbox" />
+            <span>安静一点</span>
+          </label>
+          <form class="persona-form" id="personaForm">
+            <label for="personaInput">角色设定</label>
+            <textarea
+              id="personaInput"
+              maxlength="900"
+              rows="3"
+              placeholder="描述皙皙是谁、性格、说话方式、陪伴边界"
+            ></textarea>
+            <div class="persona-actions">
+              <button class="text-button" type="submit">保存</button>
+              <button class="icon-button" id="personaResetBtn" type="button" title="恢复默认">↺</button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

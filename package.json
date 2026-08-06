@@ -1,0 +1,21 @@
+{
+  "name": "xixi-companion",
+  "version": "0.1.0",
+  "description": "A desktop floating companion pet with chat, reminders, camera-based emotion sensing, and an OpenAI-compatible model backend.",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "electron .",
+    "start": "electron ."
+  },
+  "keywords": [
+    "electron",
+    "desktop-pet",
+    "companion",
+    "llm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^37.2.6"
+  }
+}
