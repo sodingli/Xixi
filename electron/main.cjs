@@ -2,12 +2,16 @@ const { app, BrowserWindow, Notification, ipcMain, screen, session } = require('
 const fs = require('node:fs');
 const path = require('node:path');
 
+const APP_NAME = '皙皙';
+const ENV_FILE_NAME = '.env.local';
 const MAX_TIMEOUT = 2_147_483_647;
 const reminderTimers = new Map();
+const loadedEnvFiles = new Set();
 
 let mainWindow;
 
-loadLocalEnv();
+app.setName(APP_NAME);
+loadLocalEnv(getEarlyEnvPaths());
 
 function getBaseUrl() {
   return (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
@@ -32,11 +36,52 @@ function getDefaultPersona() {
   );
 }
 
-function loadLocalEnv() {
-  const envPath = path.join(__dirname, '../.env.local');
-  if (!fs.existsSync(envPath)) return;
+function getEarlyEnvPaths() {
+  return [path.join(__dirname, '..', ENV_FILE_NAME), path.join(process.cwd(), ENV_FILE_NAME)];
+}
 
-  const lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
+function getRuntimeEnvPaths() {
+  const paths = [
+    getConfigEnvPath(),
+    process.resourcesPath ? path.join(process.resourcesPath, ENV_FILE_NAME) : null,
+    process.execPath ? path.join(path.dirname(process.execPath), ENV_FILE_NAME) : null,
+    ...getEarlyEnvPaths()
+  ];
+
+  return paths.filter(Boolean);
+}
+
+function getConfigDir() {
+  try {
+    return app.getPath('userData');
+  } catch {
+    return '';
+  }
+}
+
+function getConfigEnvPath() {
+  const configDir = getConfigDir();
+  return configDir ? path.join(configDir, ENV_FILE_NAME) : null;
+}
+
+function loadLocalEnv(envPaths = getEarlyEnvPaths()) {
+  for (const envPath of [...new Set(envPaths)]) {
+    loadEnvFile(envPath);
+  }
+}
+
+function loadEnvFile(envPath) {
+  if (!envPath || loadedEnvFiles.has(envPath)) return;
+
+  let lines;
+  try {
+    if (!fs.existsSync(envPath)) return;
+    lines = fs.readFileSync(envPath, 'utf8').split(/\r?\n/);
+  } catch {
+    return;
+  }
+
+  loadedEnvFiles.add(envPath);
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#')) continue;
@@ -97,7 +142,8 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  app.setAppUserModelId('local.xixi.companion');
+  loadLocalEnv(getRuntimeEnvPaths());
+  app.setAppUserModelId('com.sodingli.xixi');
   session.defaultSession.setPermissionRequestHandler((_webContents, permission, callback) => {
     callback(permission === 'media');
   });
@@ -123,7 +169,8 @@ ipcMain.handle('app:get-config', () => ({
   baseUrl: getBaseUrl(),
   model: getChatModel(),
   visionModel: getVisionModel(),
-  defaultPersona: getDefaultPersona()
+  defaultPersona: getDefaultPersona(),
+  configDir: getConfigDir()
 }));
 
 ipcMain.handle('window:set-always-on-top', (_event, enabled) => {
