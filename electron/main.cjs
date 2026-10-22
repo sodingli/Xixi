@@ -1,6 +1,11 @@
 const { app, BrowserWindow, Notification, ipcMain, screen, session } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
+const {
+  createRealtimeConfig,
+  buildRealtimeInstructions,
+  exchangeRealtimeSdp
+} = require('./realtime-config.cjs');
 
 const APP_NAME = '皙皙';
 const ENV_FILE_NAME = '.env.local';
@@ -173,6 +178,29 @@ ipcMain.handle('app:get-config', () => ({
   configDir: getConfigDir()
 }));
 
+ipcMain.handle('voice:get-config', (_event, persona) => {
+  const config = createRealtimeConfig(process.env);
+  return {
+    available: config.available,
+    reason: config.reason,
+    model: config.model,
+    instructions: buildRealtimeInstructions(persona, getDefaultPersona())
+  };
+});
+
+ipcMain.handle('voice:exchange-sdp', async (_event, offerSdp) => {
+  const config = createRealtimeConfig(process.env);
+  try {
+    const sdp = await exchangeRealtimeSdp(config, offerSdp);
+    return { ok: true, sdp };
+  } catch (error) {
+    return {
+      ok: false,
+      error: redactSecret(error?.message || 'Realtime connection failed.', config.apiKey)
+    };
+  }
+});
+
 ipcMain.handle('window:set-always-on-top', (_event, enabled) => {
   const isEnabled = Boolean(enabled);
   mainWindow?.setAlwaysOnTop(isEnabled, 'floating');
@@ -211,6 +239,11 @@ ipcMain.handle('window:move-to', (_event, position) => {
   }
   return mainWindow.getBounds();
 });
+
+function redactSecret(message, secret) {
+  const text = String(message || '');
+  return secret ? text.replaceAll(secret, '[redacted]') : text;
+}
 
 function toSafeInteger(value, fallback) {
   const number = Number(value);

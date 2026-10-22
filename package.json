@@ -9,7 +9,8 @@
     "pack": "node scripts/dist-mac.cjs --dir-only",
     "dist": "node scripts/dist-mac.cjs",
     "dist:zip": "node scripts/dist-mac.cjs --zip-only",
-    "dist:dmg": "node scripts/dist-mac.cjs --dmg-only"
+    "dist:dmg": "node scripts/dist-mac.cjs --dmg-only",
+    "test": "node --test test"
   },
   "keywords": [
     "electron",

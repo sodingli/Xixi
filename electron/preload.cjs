@@ -2,6 +2,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('xixi', {
   getConfig: () => ipcRenderer.invoke('app:get-config'),
+  getVoiceConfig: (persona) => ipcRenderer.invoke('voice:get-config', persona),
+  exchangeVoiceSdp: (offerSdp) => ipcRenderer.invoke('voice:exchange-sdp', offerSdp),
   setAlwaysOnTop: (enabled) => ipcRenderer.invoke('window:set-always-on-top', enabled),
   setCompact: (enabled) => ipcRenderer.invoke('window:set-compact', enabled),
   hideWindow: () => ipcRenderer.invoke('window:hide'),
