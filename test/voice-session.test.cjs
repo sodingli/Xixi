@@ -121,3 +121,55 @@ test('speech start while thinking without an active response does not cancel', (
   assert.equal(result.interrupted, false);
   assert.equal(result.session.status, 'listening');
 });
+
+test('suppresses rapid duplicate voice transcripts with different item ids', () => {
+  const messages = [];
+  const first = voice.appendTranscriptOnce(messages, {
+    role: 'user',
+    content: '今天有点累',
+    itemId: 'voice-user-1'
+  }, 1000);
+  const duplicate = voice.appendTranscriptOnce(first, {
+    role: 'user',
+    content: '今天有点累',
+    itemId: 'voice-user-2'
+  }, 2500);
+  const later = voice.appendTranscriptOnce(duplicate, {
+    role: 'user',
+    content: '今天有点累',
+    itemId: 'voice-user-3'
+  }, 20_000);
+
+  assert.equal(first.length, 1);
+  assert.equal(duplicate.length, 1);
+  assert.equal(later.length, 1);
+});
+
+test('allows the same user phrase again after an assistant reply', () => {
+  const withReply = [
+    { role: 'user', content: '今天有点累', voiceCreatedAt: 1000 },
+    { role: 'assistant', content: '先休息一下。', voiceCreatedAt: 2000 }
+  ];
+  const next = voice.appendTranscriptOnce(withReply, {
+    role: 'user',
+    content: '今天有点累',
+    itemId: 'voice-user-2'
+  }, 3000);
+
+  assert.equal(next.length, 3);
+});
+
+test('suppresses a partial ASR duplicate before an assistant reply', () => {
+  const first = voice.appendTranscriptOnce([], {
+    role: 'user',
+    content: '嘻嘻，今天有点累，陪我聊两句吧。',
+    itemId: 'voice-user-1'
+  }, 1000);
+  const partial = voice.appendTranscriptOnce(first, {
+    role: 'user',
+    content: '今天有点累，陪我聊两句吧。',
+    itemId: 'voice-user-2'
+  }, 3000);
+
+  assert.equal(partial.length, 1);
+});

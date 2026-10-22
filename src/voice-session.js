@@ -139,21 +139,53 @@
     };
   }
 
-  function appendTranscriptOnce(messages, entry) {
+  function normalizeTranscript(value) {
+    return String(value || '')
+      .replace(/[\s，。！？、,.!?：:；;]/g, '')
+      .toLowerCase();
+  }
+
+  function appendTranscriptOnce(messages, entry, now = Date.now()) {
     const history = Array.isArray(messages) ? messages : [];
     const itemId = String(entry?.itemId || '');
     const content = String(entry?.content || '').trim();
-    if (!content || (itemId && history.some((message) => message.voiceItemId === itemId))) {
+    const role = entry?.role === 'assistant' ? 'assistant' : 'user';
+    const last = history.at(-1);
+    const previousText = normalizeTranscript(last?.content);
+    const nextText = normalizeTranscript(content);
+    const isDuplicateBeforeReply = last?.role === 'user' && role === 'user' && previousText === nextText;
+    const isPartialDuplicateBeforeReply =
+      last?.role === 'user' &&
+      role === 'user' &&
+      Number.isFinite(last?.voiceCreatedAt) &&
+      now - last.voiceCreatedAt < 8000 &&
+      previousText.length > 0 &&
+      nextText.length > 0 &&
+      (previousText.includes(nextText) || nextText.includes(previousText));
+    const isRapidDuplicate =
+      last?.role === role &&
+      last?.content === content &&
+      Number.isFinite(last?.voiceCreatedAt) &&
+      now - last.voiceCreatedAt < 4000;
+
+    if (
+      !content ||
+      isDuplicateBeforeReply ||
+      isPartialDuplicateBeforeReply ||
+      isRapidDuplicate ||
+      (itemId && history.some((message) => message.voiceItemId === itemId))
+    ) {
       return history;
     }
 
     return [
       ...history,
       {
-        id: entry?.id || `voice-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-        role: entry?.role === 'assistant' ? 'assistant' : 'user',
+        id: entry?.id || `voice-${now}-${Math.random().toString(36).slice(2)}`,
+        role,
         content,
-        voiceItemId: itemId || undefined
+        voiceItemId: itemId || undefined,
+        voiceCreatedAt: now
       }
     ];
   }
