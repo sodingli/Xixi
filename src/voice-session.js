@@ -10,6 +10,7 @@
       responseId: '',
       pendingAssistant: '',
       discardAssistantResponse: false,
+      discardedResponseIds: new Set(),
       seenUserItems: new Set(),
       seenAssistantResponses: new Set()
     };
@@ -19,6 +20,7 @@
     const source = session || createSession();
     return {
       ...source,
+      discardedResponseIds: new Set(source.discardedResponseIds || []),
       seenUserItems: new Set(source.seenUserItems || []),
       seenAssistantResponses: new Set(source.seenAssistantResponses || [])
     };
@@ -35,10 +37,10 @@
     }
 
     if (type === 'input_audio_buffer.speech_started') {
-      const shouldInterrupt =
-        session.responseActive || session.status === 'speaking' || session.status === 'thinking';
+      const shouldInterrupt = session.responseActive || session.status === 'speaking';
       session.status = 'listening';
       if (shouldInterrupt) {
+        if (session.responseId) session.discardedResponseIds.add(session.responseId);
         session.pendingAssistant = '';
         session.responseActive = false;
         session.discardAssistantResponse = true;
@@ -72,7 +74,8 @@
     if (type === 'response.audio_transcript.done') {
       const responseId = String(event?.response_id || session.responseId || '');
       const transcript = String(event?.transcript || session.pendingAssistant || '').trim();
-      const discarded = session.discardAssistantResponse;
+      const discarded =
+        session.discardAssistantResponse || session.discardedResponseIds.has(responseId);
       session.pendingAssistant = '';
 
       if (discarded || !transcript || !responseId || session.seenAssistantResponses.has(responseId)) {
@@ -106,6 +109,36 @@
     return result;
   }
 
+  function buildSessionUpdate(instructions) {
+    return {
+      modalities: ['text', 'audio'],
+      instructions: String(instructions || '').slice(0, 2600),
+      audio: {
+        input: {
+          format: {
+            type: 'pcm',
+            sample_rate: 16000
+          }
+        },
+        output: {
+          voice: 'Tina',
+          format: {
+            type: 'pcm',
+            sample_rate: 24000
+          }
+        }
+      },
+      input_audio_transcription: {
+        model: 'qwen3-asr-flash-realtime'
+      },
+      turn_detection: {
+        type: 'semantic_vad',
+        threshold: 0.5,
+        silence_duration_ms: 800
+      }
+    };
+  }
+
   function appendTranscriptOnce(messages, entry) {
     const history = Array.isArray(messages) ? messages : [];
     const itemId = String(entry?.itemId || '');
@@ -125,5 +158,5 @@
     ];
   }
 
-  return { createSession, applyEvent, appendTranscriptOnce };
+  return { createSession, applyEvent, appendTranscriptOnce, buildSessionUpdate };
 });

@@ -1,6 +1,6 @@
 {
   "name": "xixi-companion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A desktop floating companion pet with chat, reminders, camera-based emotion sensing, and an OpenAI-compatible model backend.",
   "main": "electron/main.cjs",
   "scripts": {
@@ -52,7 +52,11 @@
       "identity": null,
       "target": [
         "zip"
-      ]
+      ],
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "皙皙需要麦克风权限，用于你主动开启的语音陪伴。",
+        "NSCameraUsageDescription": "皙皙需要摄像头权限，用于你主动开启的情绪识别。"
+      }
     }
   }
 }

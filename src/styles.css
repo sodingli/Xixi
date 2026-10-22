@@ -686,7 +686,8 @@ button {
 .composer,
 .reminder-form {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) 34px 34px;
+  align-items: end;
   gap: 6px;
 }
 
@@ -2877,7 +2878,7 @@ button {
 }
 
 .composer {
-  grid-template-columns: 1fr 28px;
+  grid-template-columns: minmax(0, 1fr) 28px 28px;
   gap: 5px;
   align-items: end;
 }
@@ -2903,4 +2904,89 @@ button {
   width: 34px;
   height: 36px;
   min-width: 34px;
+}
+
+
+/* Continuous voice companion. */
+.voice-button {
+  -webkit-app-region: no-drag;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.composer .voice-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+}
+
+.voice-button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.voice-button:hover {
+  transform: translateY(-1px);
+}
+
+.voice-button.is-listening {
+  color: #ffffff;
+  background: var(--teal);
+  box-shadow: 0 0 0 3px rgba(42, 168, 160, 0.16);
+}
+
+.voice-button.is-connecting,
+.voice-button.is-thinking {
+  color: #ffffff;
+  background: var(--focus);
+  box-shadow: 0 0 0 3px rgba(111, 125, 251, 0.16);
+  animation: voicePulse 1.25s ease-in-out infinite;
+}
+
+.voice-button.is-speaking {
+  color: #ffffff;
+  background: #e86f99;
+  box-shadow: 0 0 0 3px rgba(232, 111, 153, 0.16);
+}
+
+.voice-button.is-error {
+  color: #ffffff;
+  background: #c95555;
+  box-shadow: 0 0 0 3px rgba(201, 85, 85, 0.14);
+}
+
+.app.voice-speaking .photo-mouth-closed {
+  opacity: 0;
+}
+
+.app.voice-speaking .photo-mouth-open-shape {
+  opacity: 1;
+}
+
+@keyframes voicePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.94);
+  }
 }

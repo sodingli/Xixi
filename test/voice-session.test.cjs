@@ -86,3 +86,38 @@ test('appendTranscriptOnce preserves messages and ignores duplicate item ids', (
   assert.equal(twice.length, 2);
   assert.equal(twice[1].voiceItemId, 'voice-user-1');
 });
+
+test('builds a realtime session update with transcription and semantic VAD', () => {
+  const update = voice.buildSessionUpdate('你是皙皙，请简短回答。');
+  assert.deepEqual(update.modalities, ['text', 'audio']);
+  assert.equal(update.audio.output.voice, 'Tina');
+  assert.equal(update.input_audio_transcription.model, 'qwen3-asr-flash-realtime');
+  assert.equal(update.turn_detection.type, 'semantic_vad');
+  assert.equal(update.turn_detection.silence_duration_ms, 800);
+  assert.equal(update.instructions, '你是皙皙，请简短回答。');
+});
+
+test('late assistant transcript after interruption and response.done stays discarded', () => {
+  const session = voice.createSession();
+  session.status = 'speaking';
+  session.responseActive = true;
+  session.responseId = 'response-late';
+  const interrupted = voice.applyEvent(session, { type: 'input_audio_buffer.speech_started' });
+  const done = voice.applyEvent(interrupted.session, { type: 'response.done' });
+  const late = voice.applyEvent(done.session, {
+    type: 'response.audio_transcript.done',
+    response_id: 'response-late',
+    transcript: '迟到的不完整回复'
+  });
+
+  assert.equal(late.addAssistant, '');
+});
+
+test('speech start while thinking without an active response does not cancel', () => {
+  const session = voice.createSession();
+  session.status = 'thinking';
+  session.responseActive = false;
+  const result = voice.applyEvent(session, { type: 'input_audio_buffer.speech_started' });
+  assert.equal(result.interrupted, false);
+  assert.equal(result.session.status, 'listening');
+});

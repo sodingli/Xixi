@@ -62,6 +62,19 @@
           <div class="messages" id="messages" aria-live="polite"></div>
           <form class="composer" id="chatForm">
             <textarea id="chatInput" rows="1" placeholder="跟皙皙说点什么"></textarea>
+            <button
+              class="voice-button"
+              id="voiceToggle"
+              type="button"
+              title="开启语音陪伴"
+              aria-label="开启语音陪伴"
+              aria-pressed="false"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z" />
+                <path d="M5.5 11.5v.5a6.5 6.5 0 0 0 13 0v-.5M12 18.5V21M9 21h6" />
+              </svg>
+            </button>
             <button class="send-button" type="submit" title="发送">➤</button>
           </form>
         </section>
@@ -117,6 +130,7 @@
           </form>
         </section>
       </section>
+      <audio id="voiceAudio" autoplay playsinline hidden></audio>
     </main>
 
     <script src="./voice-session.js"></script>

@@ -16,6 +16,7 @@ const loadedEnvFiles = new Set();
 let mainWindow;
 
 app.setName(APP_NAME);
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 loadLocalEnv(getEarlyEnvPaths());
 
 function getBaseUrl() {

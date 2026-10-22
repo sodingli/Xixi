@@ -53,8 +53,23 @@ test('exchanges SDP through an authenticated request', async () => {
     }
   );
 
-  assert.equal(answer, 'answer-sdp');
+  assert.equal(answer, 'answer-sdp\r\n');
   assert.equal(request.url, 'https://example.com/realtime?model=model-a');
   assert.equal(request.options.headers.Authorization, 'Bearer secret');
   assert.equal(request.options.body, 'offer-sdp');
+});
+
+test('normalizes an SDP answer to CRLF with a trailing line ending', async () => {
+  const answer = await exchangeRealtimeSdp(
+    {
+      available: true,
+      apiKey: 'secret',
+      model: 'model-a',
+      url: 'https://example.com/realtime?model=model-a'
+    },
+    'offer-sdp',
+    async () => new Response('v=0\na=setup:passive', { status: 200 })
+  );
+
+  assert.equal(answer, 'v=0\r\na=setup:passive\r\n');
 });
